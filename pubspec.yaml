@@ -16,12 +16,15 @@ dependencies:
   http: ^1.2.1
   charset_converter: ^2.2.0
   google_maps_flutter: ^2.6.1
+  envied: ^0.5.4+1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^3.0.0
   flutter_launcher_icons: ^0.13.1
+  build_runner: ^2.4.9
+  envied_generator: ^0.5.4+1
 
 flutter:
   uses-material-design: true
