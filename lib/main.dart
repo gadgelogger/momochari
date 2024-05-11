@@ -4,6 +4,7 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:momochari/mapview.dart';
+import 'package:momochari/splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MapView(),
+      home: const SplashScreen(),
     );
   }
 }
@@ -72,18 +73,25 @@ class CyclePortListState extends State<CyclePortList> {
               .getElementById('ctl00_ContentPlaceHolder1_hdnRtrnNm')
               ?.attributes['value'] ??
           '';
-
+      String positions = document
+              .getElementById('ctl00_ContentPlaceHolder1_hdnAllPos')
+              ?.attributes['value'] ??
+          '';
+      List<String> posList = parseCommaSeparated(positions);
       List<String> portList = parseCommaSeparated(portNames);
       List<String> rentList = parseCommaSeparated(rentNumbers);
       List<String> returnList = parseCommaSeparated(returnNumbers);
 
-      // ポートの名前、貸し出し可能台数、返却可能台数をまとめる
+      // ポートの名前、貸し出し可能台数、返却可能台数、座標をまとめる
       List<Map<String, String>> ports = [];
       for (int i = 0; i < portList.length; i++) {
+        final pos = posList[i].split(':');
         ports.add({
           'name': portList[i],
           'rent': rentList[i],
           'return': returnList[i],
+          'lat': pos[0],
+          'lng': pos[1],
         });
       }
 
@@ -101,9 +109,13 @@ class CyclePortListState extends State<CyclePortList> {
 
   @override
   Widget build(BuildContext context) {
+    final List<String> imageAssets = List.generate(
+      36,
+      (index) => 'assets/port_image/${index + 1}.jpg',
+    );
     return Scaffold(
       appBar: AppBar(
-        title: const Text('一覧表示'),
+        title: const Text('ポート一覧'),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
@@ -111,10 +123,23 @@ class CyclePortListState extends State<CyclePortList> {
               itemCount: _cyclePorts.length,
               itemBuilder: (context, index) {
                 final port = _cyclePorts[index];
+                // 画像のインデックスを計算（画像の数を超えた場合は、インデックスを循環させる）
+                final imageIndex = index % imageAssets.length;
                 return ListTile(
+                  leading: ClipOval(
+                    child: SizedBox(
+                      width: 50,
+                      height: 50,
+                      child: Image.asset(
+                        imageAssets[imageIndex],
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
                   title: Text(port['name'] ?? 'Unknown Port'),
                   subtitle:
                       Text('貸出可能: ${port['rent']}, 返却可能: ${port['return']}'),
+                  trailing: const Icon(Icons.arrow_forward),
                 );
               },
             ),
@@ -122,11 +147,12 @@ class CyclePortListState extends State<CyclePortList> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const MapView()),
+            MaterialPageRoute(
+                builder: (context) => MapView(cyclePorts: _cyclePorts)),
           );
         },
         tooltip: 'Refresh',
-        child: const Icon(Icons.refresh),
+        child: const Icon(Icons.map_outlined),
       ),
     );
   }
