@@ -69,3 +69,4 @@ lib/generated_plugin_registrant.dart
 .env
 ios/Runner/AppDelegate.swift
 android/app/src/main/AndroidManifest.xml
+assets/.DS_Store

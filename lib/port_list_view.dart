@@ -22,6 +22,12 @@ class CyclePortListState extends State<CyclePortList> {
     fetchCyclePortData();
   }
 
+  @override
+  void dispose() {
+    _loading = false;
+    super.dispose();
+  }
+
   // カンマ区切りのデータをパースしてListに変換する
   List<String> parseCommaSeparated(String value) {
     return value.split(',');
@@ -74,16 +80,19 @@ class CyclePortListState extends State<CyclePortList> {
           'lng': pos[1],
         });
       }
-
-      setState(() {
-        _cyclePorts = ports;
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _cyclePorts = ports;
+          _loading = false;
+        });
+      }
     } else {
       // 取得に失敗した場合の処理
-      setState(() {
-        _loading = false;
-      });
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
     }
   }
 
