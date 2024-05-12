@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:momochari/model/cycle_port_model.dart';
-import 'package:momochari/view/detail_view.dart';
 
 enum LocationSettingResult {
   serviceDisabled,
@@ -128,7 +127,7 @@ class MapViewState extends State<MapView> {
               snippet: '貸出可能: ${port.rent}, 返却可能: ${port.returnNumber}',
             ),
             onTap: () {
-              _goToPortDetail(port);
+              // todo: ここに遷移処理を追加
             },
             icon: BitmapDescriptor.defaultMarkerWithHue(pinColor),
           ),
@@ -149,13 +148,6 @@ class MapViewState extends State<MapView> {
         ),
       ));
     }
-  }
-
-  void _goToPortDetail(CyclePort port) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PortDetailView(port: port)),
-    );
   }
 
   Future<void> _goToCurrentLocation() async {
@@ -220,7 +212,7 @@ class MapViewState extends State<MapView> {
                       ),
                       child: InkWell(
                         onTap: () {
-                          _goToPortDetail(port);
+                          // todo: ここに遷移処理を追加
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),

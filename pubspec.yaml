@@ -30,6 +30,8 @@ dependencies:
   geolocator: ^11.0.0
   adaptive_dialog: ^2.1.0
   navigator_scope: ^1.0.1
+  flutter_svg: ^2.0.10+1
+  map_launcher: ^3.3.0
 
 dev_dependencies:
   flutter_test:

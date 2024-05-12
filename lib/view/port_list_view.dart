@@ -5,7 +5,6 @@ import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:momochari/drawer.dart';
 import 'package:momochari/model/cycle_port_model.dart';
-import 'package:momochari/view/detail_view.dart';
 import 'package:momochari/view/mapview.dart';
 
 class CyclePortList extends StatefulWidget {
@@ -104,13 +103,6 @@ class CyclePortListState extends State<CyclePortList> {
     }
   }
 
-  void _goToPortDetail(CyclePort port) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => PortDetailView(port: port)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final List<String> imageAssets = List.generate(
@@ -139,39 +131,39 @@ class CyclePortListState extends State<CyclePortList> {
                     final port = _cyclePorts[index];
                     final imageIndex = index % imageAssets.length;
                     return ListTile(
-                      leading: ClipOval(
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Image.asset(
-                            imageAssets[imageIndex],
-                            fit: BoxFit.cover,
+                        leading: ClipOval(
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Image.asset(
+                              imageAssets[imageIndex],
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      ),
-                      title: Text(port.name),
-                      subtitle: Builder(
-                        builder: (BuildContext context) {
-                          int rent = int.tryParse(port.rent) ?? 0;
-                          TextStyle style;
-                          if (rent == 0) {
-                            style = const TextStyle(
-                                fontWeight: FontWeight.bold, color: Colors.red);
-                          } else if (rent <= 5) {
-                            style = const TextStyle(color: Colors.orange);
-                          } else {
-                            style =
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? const TextStyle(color: Colors.white)
-                                    : const TextStyle(color: Colors.black);
-                          }
-                          return Text(
-                              '貸出可能: ${port.rent}, 返却可能: ${port.returnNumber}',
-                              style: style);
-                        },
-                      ),
-                      onTap: () => _goToPortDetail(port),
-                    );
+                        title: Text(port.name),
+                        subtitle: Builder(
+                          builder: (BuildContext context) {
+                            int rent = int.tryParse(port.rent) ?? 0;
+                            TextStyle style;
+                            if (rent == 0) {
+                              style = const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red);
+                            } else if (rent <= 5) {
+                              style = const TextStyle(color: Colors.orange);
+                            } else {
+                              style = Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? const TextStyle(color: Colors.white)
+                                  : const TextStyle(color: Colors.black);
+                            }
+                            return Text(
+                                '貸出可能: ${port.rent}, 返却可能: ${port.returnNumber}',
+                                style: style);
+                          },
+                        ),
+                        onTap: () => "TODO: 画面遷移処理を追加する");
                   },
                 ),
               ),
