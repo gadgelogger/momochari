@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:momochari/drawer.dart';
 import 'package:momochari/model/cycle_port_model.dart';
 import 'package:momochari/view/detail_view.dart';
-import 'package:momochari/widget/mapview_wrapper.dart';
+import 'package:momochari/view/mapview.dart';
 
 class CyclePortList extends StatefulWidget {
   const CyclePortList({super.key});
@@ -133,7 +133,6 @@ class CyclePortListState extends State<CyclePortList> {
                   itemCount: _cyclePorts.length,
                   itemBuilder: (context, index) {
                     final port = _cyclePorts[index];
-                    // 画像のインデックスを計算（画像の数を超えた場合は、インデックスを循環させる）
                     final imageIndex = index % imageAssets.length;
                     return ListTile(
                       leading: ClipOval(
@@ -174,10 +173,9 @@ class CyclePortListState extends State<CyclePortList> {
               ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Navigator.push(
-              context,
+            Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => MapViewWrapper(cyclePorts: _cyclePorts),
+                builder: (context) => MapView(cyclePorts: _cyclePorts),
               ),
             );
           },

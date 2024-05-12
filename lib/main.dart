@@ -6,6 +6,7 @@ import 'package:momochari/view/info_view.dart';
 import 'package:momochari/view/port_list_view.dart';
 import 'package:momochari/view/setting_screen.dart';
 import 'package:momochari/view/splash_screen.dart';
+import 'package:navigator_scope/navigator_scope.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,19 +43,32 @@ final baseTabViewProvider = StateProvider<ViewType>((ref) => ViewType.home);
 enum ViewType { home, setting, info }
 
 class MainPage extends ConsumerWidget {
-  MainPage({super.key});
-
-  final widgets = [
-    const CyclePortList(),
-    const InfoView(),
-    const SettingPage(),
-  ];
+  const MainPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewState = ref.watch(baseTabViewProvider);
     return Scaffold(
-      body: widgets[viewState.index],
+      body: NavigatorScope(
+        currentDestination: viewState.index,
+        destinationCount: ViewType.values.length,
+        destinationBuilder: (context, index) {
+          switch (ViewType.values[index]) {
+            case ViewType.home:
+              return NestedNavigator(
+                builder: (context) => const CyclePortList(),
+              );
+            case ViewType.info:
+              return NestedNavigator(
+                builder: (context) => const InfoView(),
+              );
+            case ViewType.setting:
+              return NestedNavigator(
+                builder: (context) => const SettingPage(),
+              );
+          }
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: viewState.index,
         onTap: (int index) {
