@@ -96,65 +96,99 @@ class MapViewState extends State<MapView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ポートマップ'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.list),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: _kGooglePlex,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-            markers: _markers,
-          ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: SizedBox(
-              height: 200,
-              child: PageView.builder(
-                itemCount: widget.cyclePorts.length,
-                controller: PageController(viewportFraction: 0.8),
-                onPageChanged: (int index) {
-                  _goToPort(widget.cyclePorts[index]);
-                },
-                itemBuilder: (_, i) {
-                  final port = widget.cyclePorts[i];
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 20),
-                    child: Card(
-                      elevation: 6,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: ListTile(
-                        title: Text(port.name),
-                        subtitle: Text(
-                            '貸出可能: ${port.rent}, 返却可能: ${port.returnNumber}'),
-                        onTap: () {
-                          _goToPortDetail(port);
-                        },
+        body: Stack(
+      children: [
+        GoogleMap(
+          mapType: MapType.normal,
+          initialCameraPosition: _kGooglePlex,
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
+          markers: _markers,
+        ),
+        Positioned(
+          left: 0,
+          right: 0,
+          bottom: 0,
+          child: SizedBox(
+            height: 200,
+            child: PageView.builder(
+              itemCount: widget.cyclePorts.length,
+              controller: PageController(viewportFraction: 0.8),
+              onPageChanged: (int index) {
+                _goToPort(widget.cyclePorts[index]);
+              },
+              itemBuilder: (_, i) {
+                final port = widget.cyclePorts[i];
+                return Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                  child: Card(
+                    elevation: 6,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        _goToPortDetail(port);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              port.name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Icon(Icons.pedal_bike,
+                                    color: Colors.blue),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '貸出可能: ${port.rent}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: int.parse(port.rent) == 0
+                                        ? Colors.red
+                                        : Colors.blue,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 4),
+                            Row(
+                              children: [
+                                const Icon(Icons.bike_scooter_outlined,
+                                    color: Colors.green),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '返却可能: ${port.returnNumber}',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
           ),
-        ],
-      ),
-    );
+        ),
+      ],
+    ));
   }
 }

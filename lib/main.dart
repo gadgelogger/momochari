@@ -54,9 +54,7 @@ class MainPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final viewState = ref.watch(baseTabViewProvider);
     return Scaffold(
-      body: Center(
-        child: widgets[viewState.index],
-      ),
+      body: widgets[viewState.index],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: viewState.index,
         onTap: (int index) {

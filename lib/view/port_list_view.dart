@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:momochari/drawer.dart';
 import 'package:momochari/model/cycle_port_model.dart';
 import 'package:momochari/view/detail_view.dart';
-import 'package:momochari/view/mapview.dart';
+import 'package:momochari/widget/mapview_wrapper.dart';
 
 class CyclePortList extends StatefulWidget {
   const CyclePortList({super.key});
@@ -75,6 +75,7 @@ class CyclePortListState extends State<CyclePortList> {
       List<CyclePort> ports = [];
       for (int i = 0; i < portList.length; i++) {
         final pos = posList[i].split(':');
+
         ports.add(CyclePort(
           name: portList[i],
           rent: rentList[i],
@@ -112,73 +113,77 @@ class CyclePortListState extends State<CyclePortList> {
       36,
       (index) => 'assets/port_image/${index + 1}.jpg',
     );
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('ポート一覧'),
-      ),
-      drawer: const NavBar(),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: () async {
-                fetchCyclePortData();
-                setState(() {
-                  _loading = true;
-                });
-              },
-              child: ListView.builder(
-                itemCount: _cyclePorts.length,
-                itemBuilder: (context, index) {
-                  final port = _cyclePorts[index];
-                  // 画像のインデックスを計算（画像の数を超えた場合は、インデックスを循環させる）
-                  final imageIndex = index % imageAssets.length;
-                  return ListTile(
-                    leading: ClipOval(
-                      child: SizedBox(
-                        width: 50,
-                        height: 50,
-                        child: Image.asset(
-                          imageAssets[imageIndex],
-                          fit: BoxFit.cover,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('ポート一覧'),
+        ),
+        drawer: const NavBar(),
+        body: _loading
+            ? const Center(child: CircularProgressIndicator())
+            : RefreshIndicator(
+                onRefresh: () async {
+                  fetchCyclePortData();
+                  setState(() {
+                    _loading = true;
+                  });
+                },
+                child: ListView.builder(
+                  itemCount: _cyclePorts.length,
+                  itemBuilder: (context, index) {
+                    final port = _cyclePorts[index];
+                    // 画像のインデックスを計算（画像の数を超えた場合は、インデックスを循環させる）
+                    final imageIndex = index % imageAssets.length;
+                    return ListTile(
+                      leading: ClipOval(
+                        child: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: Image.asset(
+                            imageAssets[imageIndex],
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                    title: Text(port.name),
-                    subtitle: Builder(
-                      builder: (BuildContext context) {
-                        int rent = int.tryParse(port.rent) ?? 0;
-                        TextStyle style;
-                        if (rent == 0) {
-                          style = const TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.red);
-                        } else if (rent <= 5) {
-                          style = const TextStyle(color: Colors.orange);
-                        } else {
-                          style =
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? const TextStyle(color: Colors.white)
-                                  : const TextStyle(color: Colors.black);
-                        }
-                        return Text(
-                            '貸出可能: ${port.rent}, 返却可能: ${port.returnNumber}',
-                            style: style);
-                      },
-                    ),
-                    onTap: () => _goToPortDetail(port),
-                  );
-                },
+                      title: Text(port.name),
+                      subtitle: Builder(
+                        builder: (BuildContext context) {
+                          int rent = int.tryParse(port.rent) ?? 0;
+                          TextStyle style;
+                          if (rent == 0) {
+                            style = const TextStyle(
+                                fontWeight: FontWeight.bold, color: Colors.red);
+                          } else if (rent <= 5) {
+                            style = const TextStyle(color: Colors.orange);
+                          } else {
+                            style =
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? const TextStyle(color: Colors.white)
+                                    : const TextStyle(color: Colors.black);
+                          }
+                          return Text(
+                              '貸出可能: ${port.rent}, 返却可能: ${port.returnNumber}',
+                              style: style);
+                        },
+                      ),
+                      onTap: () => _goToPortDetail(port),
+                    );
+                  },
+                ),
               ),
-            ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => MapView(cyclePorts: _cyclePorts)),
-          );
-        },
-        tooltip: 'Refresh',
-        child: const Icon(Icons.map_outlined),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MapViewWrapper(cyclePorts: _cyclePorts),
+              ),
+            );
+          },
+          tooltip: 'Map',
+          child: const Icon(Icons.map_outlined),
+        ),
       ),
     );
   }
