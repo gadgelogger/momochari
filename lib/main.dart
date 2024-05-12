@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:momochari/domain/share_preferences_instance.dart';
 import 'package:momochari/domain/theme_mode_provider.dart';
+import 'package:momochari/view/info_view.dart';
 import 'package:momochari/view/port_list_view.dart';
 import 'package:momochari/view/setting_screen.dart';
 import 'package:momochari/view/splash_screen.dart';
@@ -38,13 +39,14 @@ class MainApp extends ConsumerWidget {
 
 final baseTabViewProvider = StateProvider<ViewType>((ref) => ViewType.home);
 
-enum ViewType { home, setting }
+enum ViewType { home, setting, info }
 
 class MainPage extends ConsumerWidget {
   MainPage({super.key});
 
   final widgets = [
     const CyclePortList(),
+    const InfoView(),
     const SettingPage(),
   ];
 
@@ -65,6 +67,8 @@ class MainPage extends ConsumerWidget {
             icon: Icon(Icons.pedal_bike),
             label: "ポート一覧",
           ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.info_outline), label: "お知らせ"),
           BottomNavigationBarItem(icon: Icon(Icons.settings), label: "設定"),
         ],
       ),
