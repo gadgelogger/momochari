@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:momochari/port_list_view.dart';
-import 'package:momochari/setting_screen.dart';
-import 'package:momochari/share_preferences_instance.dart';
-import 'package:momochari/splash_screen.dart';
-import 'package:momochari/theme_mode_provider.dart';
+import 'package:momochari/domain/share_preferences_instance.dart';
+import 'package:momochari/domain/theme_mode_provider.dart';
+import 'package:momochari/view/port_list_view.dart';
+import 'package:momochari/view/setting_screen.dart';
+import 'package:momochari/view/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

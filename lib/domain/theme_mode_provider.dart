@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:momochari/share_preferences_instance.dart';
+import 'package:momochari/domain/share_preferences_instance.dart';
 // Project imports:
 
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {

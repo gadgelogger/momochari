@@ -5,7 +5,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:momochari/theme_mode_provider.dart';
+import 'package:momochari/domain/theme_mode_provider.dart';
+import 'package:momochari/drawer.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:share_plus/share_plus.dart';
@@ -21,6 +22,7 @@ class SettingPage extends ConsumerWidget {
       appBar: AppBar(
         title: const Text("設定"),
       ),
+      drawer: const NavBar(),
       body: FutureBuilder<PackageInfo>(
         future: PackageInfo.fromPlatform(),
         builder: (context, snapshot) {

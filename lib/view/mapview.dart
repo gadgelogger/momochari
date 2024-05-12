@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:momochari/detail_view.dart';
+import 'package:momochari/view/detail_view.dart';
 
 class MapView extends StatefulWidget {
   final List<Map<String, String>> cyclePorts;

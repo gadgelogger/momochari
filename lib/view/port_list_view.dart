@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
-import 'package:momochari/mapview.dart';
+import 'package:momochari/drawer.dart';
+import 'package:momochari/view/detail_view.dart';
+import 'package:momochari/view/mapview.dart';
 
 class CyclePortList extends StatefulWidget {
   const CyclePortList({super.key});
@@ -96,6 +98,13 @@ class CyclePortListState extends State<CyclePortList> {
     }
   }
 
+  void _goToPortDetail(Map<String, String> port) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => PortDetailView(port: port)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<String> imageAssets = List.generate(
@@ -106,31 +115,55 @@ class CyclePortListState extends State<CyclePortList> {
       appBar: AppBar(
         title: const Text('ポート一覧'),
       ),
+      drawer: const NavBar(),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: _cyclePorts.length,
-              itemBuilder: (context, index) {
-                final port = _cyclePorts[index];
-                // 画像のインデックスを計算（画像の数を超えた場合は、インデックスを循環させる）
-                final imageIndex = index % imageAssets.length;
-                return ListTile(
-                  leading: ClipOval(
-                    child: SizedBox(
-                      width: 50,
-                      height: 50,
-                      child: Image.asset(
-                        imageAssets[imageIndex],
-                        fit: BoxFit.cover,
+          : RefreshIndicator(
+              onRefresh: () async {
+                fetchCyclePortData();
+                setState(() {
+                  _loading = true;
+                });
+              },
+              child: ListView.builder(
+                itemCount: _cyclePorts.length,
+                itemBuilder: (context, index) {
+                  final port = _cyclePorts[index];
+                  // 画像のインデックスを計算（画像の数を超えた場合は、インデックスを循環させる）
+                  final imageIndex = index % imageAssets.length;
+                  return ListTile(
+                    leading: ClipOval(
+                      child: SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: Image.asset(
+                          imageAssets[imageIndex],
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),
-                  title: Text(port['name'] ?? 'Unknown Port'),
-                  subtitle:
-                      Text('貸出可能: ${port['rent']}, 返却可能: ${port['return']}'),
-                  trailing: const Icon(Icons.arrow_forward),
-                );
-              },
+                    title: Text(port['name'] ?? 'Unknown Port'),
+                    subtitle: Builder(
+                      builder: (BuildContext context) {
+                        int rent = int.tryParse(port['rent']!) ?? 0;
+                        TextStyle style;
+                        if (rent == 0) {
+                          style = const TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.red);
+                        } else if (rent <= 5) {
+                          style = const TextStyle(color: Colors.orange);
+                        } else {
+                          style = const TextStyle(color: Colors.black);
+                        }
+                        return Text(
+                            '貸出可能: ${port['rent']}, 返却可能: ${port['return']}',
+                            style: style);
+                      },
+                    ),
+                    onTap: () => _goToPortDetail(port),
+                  );
+                },
+              ),
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
