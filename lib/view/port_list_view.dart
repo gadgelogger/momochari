@@ -4,6 +4,7 @@ import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
 import 'package:momochari/drawer.dart';
+import 'package:momochari/model/cycle_port_model.dart';
 import 'package:momochari/view/detail_view.dart';
 import 'package:momochari/view/mapview.dart';
 
@@ -15,7 +16,7 @@ class CyclePortList extends StatefulWidget {
 }
 
 class CyclePortListState extends State<CyclePortList> {
-  List<Map<String, String>> _cyclePorts = [];
+  List<CyclePort> _cyclePorts = [];
   bool _loading = true;
 
   @override
@@ -71,16 +72,16 @@ class CyclePortListState extends State<CyclePortList> {
       List<String> returnList = parseCommaSeparated(returnNumbers);
 
       // ポートの名前、貸し出し可能台数、返却可能台数、座標をまとめる
-      List<Map<String, String>> ports = [];
+      List<CyclePort> ports = [];
       for (int i = 0; i < portList.length; i++) {
         final pos = posList[i].split(':');
-        ports.add({
-          'name': portList[i],
-          'rent': rentList[i],
-          'return': returnList[i],
-          'lat': pos[0],
-          'lng': pos[1],
-        });
+        ports.add(CyclePort(
+          name: portList[i],
+          rent: rentList[i],
+          returnNumber: returnList[i],
+          lat: pos[0],
+          lng: pos[1],
+        ));
       }
       if (mounted) {
         setState(() {
@@ -98,7 +99,7 @@ class CyclePortListState extends State<CyclePortList> {
     }
   }
 
-  void _goToPortDetail(Map<String, String> port) {
+  void _goToPortDetail(CyclePort port) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => PortDetailView(port: port)),
@@ -142,10 +143,10 @@ class CyclePortListState extends State<CyclePortList> {
                         ),
                       ),
                     ),
-                    title: Text(port['name'] ?? 'Unknown Port'),
+                    title: Text(port.name),
                     subtitle: Builder(
                       builder: (BuildContext context) {
-                        int rent = int.tryParse(port['rent']!) ?? 0;
+                        int rent = int.tryParse(port.rent) ?? 0;
                         TextStyle style;
                         if (rent == 0) {
                           style = const TextStyle(
@@ -153,10 +154,13 @@ class CyclePortListState extends State<CyclePortList> {
                         } else if (rent <= 5) {
                           style = const TextStyle(color: Colors.orange);
                         } else {
-                          style = const TextStyle(color: Colors.black);
+                          style =
+                              Theme.of(context).brightness == Brightness.dark
+                                  ? const TextStyle(color: Colors.white)
+                                  : const TextStyle(color: Colors.black);
                         }
                         return Text(
-                            '貸出可能: ${port['rent']}, 返却可能: ${port['return']}',
+                            '貸出可能: ${port.rent}, 返却可能: ${port.returnNumber}',
                             style: style);
                       },
                     ),

@@ -25,6 +25,8 @@ dependencies:
   url_launcher: ^6.2.6
   shared_preferences: ^2.2.3
   share_plus: ^9.0.0
+  freezed_annotation: ^2.4.1
+  json_annotation: ^4.9.0
 
 dev_dependencies:
   flutter_test:
@@ -33,6 +35,8 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   build_runner: ^2.4.9
   envied_generator: ^0.5.4+1
+  freezed: ^2.5.2
+  json_serializable: ^6.8.0
 
 flutter:
   uses-material-design: true

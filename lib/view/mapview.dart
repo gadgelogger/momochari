@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:momochari/model/cycle_port_model.dart';
 import 'package:momochari/view/detail_view.dart';
 
 class MapView extends StatefulWidget {
-  final List<Map<String, String>> cyclePorts;
+  final List<CyclePort> cyclePorts;
 
   const MapView({super.key, required this.cyclePorts});
 
@@ -44,11 +45,10 @@ class MapViewState extends State<MapView> {
   void _addMarkers() {
     setState(() {
       for (final port in widget.cyclePorts) {
-        final formattedPos = _formatLatLng(port['lat']!, port['lng']!);
-        debugPrint(formattedPos); // デバッグ用
-        final latLng =
-            LatLng(double.parse(port['lat']!), double.parse(port['lng']!));
-        final rentCount = int.tryParse(port['rent'] ?? '') ?? 0;
+        final formattedPos = _formatLatLng(port.lat, port.lng);
+        debugPrint(formattedPos);
+        final latLng = LatLng(double.parse(port.lat), double.parse(port.lng));
+        final rentCount = int.tryParse(port.rent) ?? 0;
         final pinColor = rentCount == 0
             ? BitmapDescriptor.hueRed
             : rentCount <= 5
@@ -56,11 +56,11 @@ class MapViewState extends State<MapView> {
                 : BitmapDescriptor.hueAzure;
         _markers.add(
           Marker(
-            markerId: MarkerId(port['name']!),
+            markerId: MarkerId(port.name),
             position: latLng,
             infoWindow: InfoWindow(
-              title: port['name'],
-              snippet: '貸出可能: ${port['rent']}, 返却可能: ${port['return']}',
+              title: port.name,
+              snippet: '貸出可能: ${port.rent}, 返却可能: ${port.returnNumber}',
             ),
             onTap: () {
               _goToPortDetail(port);
@@ -72,9 +72,9 @@ class MapViewState extends State<MapView> {
     });
   }
 
-  Future<void> _goToPort(Map<String, String> port) async {
-    final lat = double.tryParse(port['lat'] ?? '');
-    final lng = double.tryParse(port['lng'] ?? '');
+  Future<void> _goToPort(CyclePort port) async {
+    final lat = double.tryParse(port.lat);
+    final lng = double.tryParse(port.lng);
     if (lat != null && lng != null) {
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(
@@ -86,7 +86,7 @@ class MapViewState extends State<MapView> {
     }
   }
 
-  void _goToPortDetail(Map<String, String> port) {
+  void _goToPortDetail(CyclePort port) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => PortDetailView(port: port)),
@@ -130,6 +130,7 @@ class MapViewState extends State<MapView> {
                   _goToPort(widget.cyclePorts[index]);
                 },
                 itemBuilder: (_, i) {
+                  final port = widget.cyclePorts[i];
                   return Container(
                     margin: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 20),
@@ -139,11 +140,11 @@ class MapViewState extends State<MapView> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: ListTile(
-                        title: Text(widget.cyclePorts[i]['name']!),
+                        title: Text(port.name),
                         subtitle: Text(
-                            '貸出可能: ${widget.cyclePorts[i]['rent']}, 返却可能: ${widget.cyclePorts[i]['return']}'),
+                            '貸出可能: ${port.rent}, 返却可能: ${port.returnNumber}'),
                         onTap: () {
-                          _goToPortDetail(widget.cyclePorts[i]);
+                          _goToPortDetail(port);
                         },
                       ),
                     ),
