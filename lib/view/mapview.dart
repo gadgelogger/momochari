@@ -17,20 +17,20 @@ enum LocationSettingResult {
 Future<LocationSettingResult> checkLocationSetting() async {
   final serviceEnabled = await Geolocator.isLocationServiceEnabled();
   if (!serviceEnabled) {
-    print('Location services are disabled.');
+    debugPrint('Location services are disabled.');
     return Future.value(LocationSettingResult.serviceDisabled);
   }
   var permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
     if (permission == LocationPermission.denied) {
-      print('Location permissions are denied.');
+      debugPrint('Location permissions are denied.');
       return Future.value(LocationSettingResult.permissionDenied);
     }
   }
 
   if (permission == LocationPermission.deniedForever) {
-    print('Location permissions are permanently denied.');
+    debugPrint('Location permissions are permanently denied.');
     return Future.value(LocationSettingResult.permissionDeniedForever);
   }
   return Future.value(LocationSettingResult.enabled);
@@ -70,10 +70,9 @@ class MapViewState extends State<MapView> {
   final Completer<GoogleMapController> _controller = Completer();
   final Set<Marker> _markers = {};
   LatLng? _currentLocation;
-
   static const CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(34.66772301646893, 133.9313338048279),
-    zoom: 14,
+    target: LatLng(34.66813596243033, 133.9262377662192),
+    zoom: 13.9,
   );
 
   @override
@@ -117,9 +116,9 @@ class MapViewState extends State<MapView> {
         final rentCount = int.tryParse(port.rent) ?? 0;
         final pinColor = rentCount == 0
             ? BitmapDescriptor.hueRed
-            : rentCount <= 5
+            : rentCount <= 3
                 ? BitmapDescriptor.hueYellow
-                : BitmapDescriptor.hueAzure;
+                : BitmapDescriptor.hueViolet;
         _markers.add(
           Marker(
             markerId: MarkerId(port.name),

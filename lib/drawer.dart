@@ -9,6 +9,7 @@ class NavBar extends StatelessWidget {
     return Drawer(
       elevation: 0,
       child: ListView(
+        padding: const EdgeInsets.only(top: 0.0),
         children: <Widget>[
           const DrawerHeader(
             decoration: BoxDecoration(
