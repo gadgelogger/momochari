@@ -4,6 +4,7 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:map_launcher/map_launcher.dart' as ml;
 import 'package:momochari/model/cycle_port_model.dart';
 
 enum LocationSettingResult {
@@ -73,6 +74,7 @@ class MapViewState extends State<MapView> {
     target: LatLng(34.66813596243033, 133.9262377662192),
     zoom: 13.9,
   );
+  int _selectedPortIndex = -1;
 
   @override
   void initState() {
@@ -108,10 +110,13 @@ class MapViewState extends State<MapView> {
 
   void _addMarkers() {
     setState(() {
-      for (final port in widget.cyclePorts) {
+      for (int i = 0; i < widget.cyclePorts.length; i++) {
+        final port = widget.cyclePorts[i];
         final formattedPos = _formatLatLng(port.lat, port.lng);
         debugPrint(formattedPos);
-        final latLng = LatLng(double.parse(port.lat), double.parse(port.lng));
+        final lat = double.parse(port.lat);
+        final lng = double.parse(port.lng);
+        final latLng = LatLng(lat, lng);
         final rentCount = int.tryParse(port.rent) ?? 0;
         final pinColor = rentCount == 0
             ? BitmapDescriptor.hueRed
@@ -127,7 +132,10 @@ class MapViewState extends State<MapView> {
               snippet: '貸出可能: ${port.rent}, 返却可能: ${port.returnNumber}',
             ),
             onTap: () {
-              // todo: ここに遷移処理を追加
+              setState(() {
+                _selectedPortIndex = i;
+              });
+              _goToPort(port);
             },
             icon: BitmapDescriptor.defaultMarkerWithHue(pinColor),
           ),
@@ -172,6 +180,18 @@ class MapViewState extends State<MapView> {
     controller.animateCamera(CameraUpdate.newCameraPosition(_kGooglePlex));
   }
 
+  Future<void> _launchNavigation(CyclePort port) async {
+    final lat = double.parse(port.lat);
+    final lng = double.parse(port.lng);
+    final availableMaps = await ml.MapLauncher.installedMaps;
+    if (availableMaps.isNotEmpty) {
+      await availableMaps.first.showMarker(
+        coords: ml.Coords(lat, lng),
+        title: port.name,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -196,8 +216,15 @@ class MapViewState extends State<MapView> {
               height: 200,
               child: PageView.builder(
                 itemCount: widget.cyclePorts.length,
-                controller: PageController(viewportFraction: 0.8),
+                controller: PageController(
+                  viewportFraction: 0.8,
+                  initialPage:
+                      _selectedPortIndex != -1 ? _selectedPortIndex : 0,
+                ),
                 onPageChanged: (int index) {
+                  setState(() {
+                    _selectedPortIndex = index;
+                  });
                   _goToPort(widget.cyclePorts[index]);
                 },
                 itemBuilder: (_, i) {
@@ -212,7 +239,14 @@ class MapViewState extends State<MapView> {
                       ),
                       child: InkWell(
                         onTap: () {
-                          // todo: ここに遷移処理を追加
+                          if (_selectedPortIndex == i) {
+                            _launchNavigation(port);
+                          } else {
+                            setState(() {
+                              _selectedPortIndex = i;
+                            });
+                            _goToPort(port);
+                          }
                         },
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
