@@ -12,12 +12,35 @@ class PortDetailView extends StatelessWidget {
       appBar: AppBar(
         title: Text(port.name),
       ),
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('貸出可能台数: ${port.rent}'),
-            Text('返却可能台数: ${port.returnNumber}'),
+            Image.asset(
+              port.imageAsset,
+              width: double.infinity,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    port.name,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Text('貸出可能台数: ${port.rent}'),
+                  const SizedBox(height: 8),
+                  Text('返却可能台数: ${port.returnNumber}'),
+                ],
+              ),
+            ),
           ],
         ),
       ),

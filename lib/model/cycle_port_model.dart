@@ -11,6 +11,7 @@ class CyclePort with _$CyclePort {
     required String returnNumber,
     required String lat,
     required String lng,
+    required String imageAsset,
   }) = _CyclePort;
 
   factory CyclePort.fromJson(Map<String, dynamic> json) =>

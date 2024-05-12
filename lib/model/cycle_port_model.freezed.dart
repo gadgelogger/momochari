@@ -25,6 +25,7 @@ mixin _$CyclePort {
   String get returnNumber => throw _privateConstructorUsedError;
   String get lat => throw _privateConstructorUsedError;
   String get lng => throw _privateConstructorUsedError;
+  String get imageAsset => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -38,7 +39,12 @@ abstract class $CyclePortCopyWith<$Res> {
       _$CyclePortCopyWithImpl<$Res, CyclePort>;
   @useResult
   $Res call(
-      {String name, String rent, String returnNumber, String lat, String lng});
+      {String name,
+      String rent,
+      String returnNumber,
+      String lat,
+      String lng,
+      String imageAsset});
 }
 
 /// @nodoc
@@ -59,6 +65,7 @@ class _$CyclePortCopyWithImpl<$Res, $Val extends CyclePort>
     Object? returnNumber = null,
     Object? lat = null,
     Object? lng = null,
+    Object? imageAsset = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -81,6 +88,10 @@ class _$CyclePortCopyWithImpl<$Res, $Val extends CyclePort>
           ? _value.lng
           : lng // ignore: cast_nullable_to_non_nullable
               as String,
+      imageAsset: null == imageAsset
+          ? _value.imageAsset
+          : imageAsset // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -94,7 +105,12 @@ abstract class _$$CyclePortImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String name, String rent, String returnNumber, String lat, String lng});
+      {String name,
+      String rent,
+      String returnNumber,
+      String lat,
+      String lng,
+      String imageAsset});
 }
 
 /// @nodoc
@@ -113,6 +129,7 @@ class __$$CyclePortImplCopyWithImpl<$Res>
     Object? returnNumber = null,
     Object? lat = null,
     Object? lng = null,
+    Object? imageAsset = null,
   }) {
     return _then(_$CyclePortImpl(
       name: null == name
@@ -135,6 +152,10 @@ class __$$CyclePortImplCopyWithImpl<$Res>
           ? _value.lng
           : lng // ignore: cast_nullable_to_non_nullable
               as String,
+      imageAsset: null == imageAsset
+          ? _value.imageAsset
+          : imageAsset // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -147,7 +168,8 @@ class _$CyclePortImpl implements _CyclePort {
       required this.rent,
       required this.returnNumber,
       required this.lat,
-      required this.lng});
+      required this.lng,
+      required this.imageAsset});
 
   factory _$CyclePortImpl.fromJson(Map<String, dynamic> json) =>
       _$$CyclePortImplFromJson(json);
@@ -162,10 +184,12 @@ class _$CyclePortImpl implements _CyclePort {
   final String lat;
   @override
   final String lng;
+  @override
+  final String imageAsset;
 
   @override
   String toString() {
-    return 'CyclePort(name: $name, rent: $rent, returnNumber: $returnNumber, lat: $lat, lng: $lng)';
+    return 'CyclePort(name: $name, rent: $rent, returnNumber: $returnNumber, lat: $lat, lng: $lng, imageAsset: $imageAsset)';
   }
 
   @override
@@ -178,13 +202,15 @@ class _$CyclePortImpl implements _CyclePort {
             (identical(other.returnNumber, returnNumber) ||
                 other.returnNumber == returnNumber) &&
             (identical(other.lat, lat) || other.lat == lat) &&
-            (identical(other.lng, lng) || other.lng == lng));
+            (identical(other.lng, lng) || other.lng == lng) &&
+            (identical(other.imageAsset, imageAsset) ||
+                other.imageAsset == imageAsset));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, name, rent, returnNumber, lat, lng);
+      Object.hash(runtimeType, name, rent, returnNumber, lat, lng, imageAsset);
 
   @JsonKey(ignore: true)
   @override
@@ -206,7 +232,8 @@ abstract class _CyclePort implements CyclePort {
       required final String rent,
       required final String returnNumber,
       required final String lat,
-      required final String lng}) = _$CyclePortImpl;
+      required final String lng,
+      required final String imageAsset}) = _$CyclePortImpl;
 
   factory _CyclePort.fromJson(Map<String, dynamic> json) =
       _$CyclePortImpl.fromJson;
@@ -221,6 +248,8 @@ abstract class _CyclePort implements CyclePort {
   String get lat;
   @override
   String get lng;
+  @override
+  String get imageAsset;
   @override
   @JsonKey(ignore: true)
   _$$CyclePortImplCopyWith<_$CyclePortImpl> get copyWith =>

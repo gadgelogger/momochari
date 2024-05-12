@@ -13,6 +13,7 @@ _$CyclePortImpl _$$CyclePortImplFromJson(Map<String, dynamic> json) =>
       returnNumber: json['returnNumber'] as String,
       lat: json['lat'] as String,
       lng: json['lng'] as String,
+      imageAsset: json['imageAsset'] as String,
     );
 
 Map<String, dynamic> _$$CyclePortImplToJson(_$CyclePortImpl instance) =>
@@ -22,4 +23,5 @@ Map<String, dynamic> _$$CyclePortImplToJson(_$CyclePortImpl instance) =>
       'returnNumber': instance.returnNumber,
       'lat': instance.lat,
       'lng': instance.lng,
+      'imageAsset': instance.imageAsset,
     };

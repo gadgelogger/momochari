@@ -70,18 +70,22 @@ class CyclePortListState extends State<CyclePortList> {
       List<String> portList = parseCommaSeparated(portNames);
       List<String> rentList = parseCommaSeparated(rentNumbers);
       List<String> returnList = parseCommaSeparated(returnNumbers);
-
+      final List<String> imageAssets = List.generate(
+        36,
+        (index) => 'assets/port_image/${index + 1}.jpg',
+      );
       // ポートの名前、貸し出し可能台数、返却可能台数、座標をまとめる
       List<CyclePort> ports = [];
       for (int i = 0; i < portList.length; i++) {
         final pos = posList[i].split(':');
-
+        final imageIndex = i % imageAssets.length;
         ports.add(CyclePort(
           name: portList[i],
           rent: rentList[i],
           returnNumber: returnList[i],
           lat: pos[0],
           lng: pos[1],
+          imageAsset: imageAssets[imageIndex],
         ));
       }
       if (mounted) {
