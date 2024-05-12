@@ -160,6 +160,11 @@ class MapViewState extends State<MapView> {
   }
 
   Future<void> _goToCurrentLocation() async {
+    final locationSettingResult = await checkLocationSetting();
+    if (locationSettingResult != LocationSettingResult.enabled) {
+      await recoverLocationSettings(context, locationSettingResult);
+    }
+
     final currentLocation = await getCurrentLocation();
     _currentLocation = currentLocation;
     final GoogleMapController controller = await _controller.future;
@@ -182,112 +187,99 @@ class MapViewState extends State<MapView> {
       appBar: AppBar(
         title: const Text('ポートマップ'),
       ),
-      body: FutureBuilder<LatLng>(
-        future: getCurrentLocation(),
-        builder: (BuildContext context, AsyncSnapshot<LatLng> snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          _currentLocation = snapshot.data;
-          return Stack(
-            children: [
-              GoogleMap(
-                mapType: MapType.normal,
-                initialCameraPosition: CameraPosition(
-                  target: snapshot.data ?? _kGooglePlex.target,
-                  zoom: 17.0,
-                ),
-                myLocationEnabled: true,
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
+      body: Stack(
+        children: [
+          GoogleMap(
+            mapType: MapType.normal,
+            initialCameraPosition: _kGooglePlex,
+            onMapCreated: (GoogleMapController controller) {
+              _controller.complete(controller);
+            },
+            markers: _markers,
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            child: SizedBox(
+              height: 200,
+              child: PageView.builder(
+                itemCount: widget.cyclePorts.length,
+                controller: PageController(viewportFraction: 0.8),
+                onPageChanged: (int index) {
+                  _goToPort(widget.cyclePorts[index]);
                 },
-                markers: _markers,
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: SizedBox(
-                  height: 200,
-                  child: PageView.builder(
-                    itemCount: widget.cyclePorts.length,
-                    controller: PageController(viewportFraction: 0.8),
-                    onPageChanged: (int index) {
-                      _goToPort(widget.cyclePorts[index]);
-                    },
-                    itemBuilder: (_, i) {
-                      final port = widget.cyclePorts[i];
-                      return Container(
-                        margin: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 20),
-                        child: Card(
-                          elevation: 6,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              _goToPortDetail(port);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                itemBuilder: (_, i) {
+                  final port = widget.cyclePorts[i];
+                  return Container(
+                    margin: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 20),
+                    child: Card(
+                      elevation: 6,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          _goToPortDetail(port);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                port.name,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Row(
                                 children: [
+                                  const Icon(Icons.pedal_bike,
+                                      color: Colors.blue),
+                                  const SizedBox(width: 8),
                                   Text(
-                                    port.name,
-                                    style: const TextStyle(
-                                      fontSize: 18,
+                                    '貸出可能: ${port.rent}',
+                                    style: TextStyle(
+                                      fontSize: 16,
                                       fontWeight: FontWeight.bold,
+                                      color: int.parse(port.rent) == 0
+                                          ? Colors.red
+                                          : Colors.blue,
                                     ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.pedal_bike,
-                                          color: Colors.blue),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        '貸出可能: ${port.rent}',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: int.parse(port.rent) == 0
-                                              ? Colors.red
-                                              : Colors.blue,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.bike_scooter_outlined,
-                                          color: Colors.green),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        '返却可能: ${port.returnNumber}',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.green,
-                                        ),
-                                      ),
-                                    ],
                                   ),
                                 ],
                               ),
-                            ),
+                              const SizedBox(height: 4),
+                              Row(
+                                children: [
+                                  const Icon(Icons.bike_scooter_outlined,
+                                      color: Colors.green),
+                                  const SizedBox(width: 8),
+                                  Text(
+                                    '返却可能: ${port.returnNumber}',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
+                    ),
+                  );
+                },
               ),
-            ],
-          );
-        },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,

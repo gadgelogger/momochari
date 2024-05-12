@@ -40,7 +40,7 @@ class MainApp extends ConsumerWidget {
 
 final baseTabViewProvider = StateProvider<ViewType>((ref) => ViewType.home);
 
-enum ViewType { home, setting, info }
+enum ViewType { home, info, setting }
 
 class MainPage extends ConsumerWidget {
   const MainPage({super.key});
