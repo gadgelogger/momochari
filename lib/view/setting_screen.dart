@@ -1,10 +1,10 @@
 // Dart imports:
 // Flutter imports:
+import 'package:PeachPedal/domain/theme_mode_provider.dart';
+import 'package:PeachPedal/drawer.dart';
 import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:momochari/domain/theme_mode_provider.dart';
-import 'package:momochari/drawer.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:url_launcher/url_launcher_string.dart';

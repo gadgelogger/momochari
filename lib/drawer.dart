@@ -16,7 +16,7 @@ class NavBar extends StatelessWidget {
               color: Colors.pink,
             ),
             child: Text(
-              'ももチャリ',
+              'PeachPedal',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 24,
@@ -25,7 +25,7 @@ class NavBar extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.info),
-            title: const Text('ももチャリって？'),
+            title: const Text('ももチャリって？\n(公式サイト)'),
             onTap: () {
               // Do something
               launchUrlString('https://www.momochari.jp/about/index.html');

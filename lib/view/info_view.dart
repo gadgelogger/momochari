@@ -1,9 +1,9 @@
 import 'dart:convert';
 
+import 'package:PeachPedal/model/info_model.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart' as parser;
 import 'package:http/http.dart' as http;
-import 'package:momochari/model/info_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InfoView extends StatefulWidget {

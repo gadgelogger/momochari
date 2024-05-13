@@ -1,11 +1,11 @@
 import 'dart:async';
 
+import 'package:PeachPedal/model/cycle_port_model.dart';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_launcher/map_launcher.dart' as ml;
-import 'package:momochari/model/cycle_port_model.dart';
 
 enum LocationSettingResult {
   serviceDisabled,

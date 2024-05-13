@@ -1,11 +1,11 @@
+import 'package:PeachPedal/domain/share_preferences_instance.dart';
+import 'package:PeachPedal/domain/theme_mode_provider.dart';
+import 'package:PeachPedal/view/info_view.dart';
+import 'package:PeachPedal/view/port_list_view.dart';
+import 'package:PeachPedal/view/setting_screen.dart';
+import 'package:PeachPedal/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:momochari/domain/share_preferences_instance.dart';
-import 'package:momochari/domain/theme_mode_provider.dart';
-import 'package:momochari/view/info_view.dart';
-import 'package:momochari/view/port_list_view.dart';
-import 'package:momochari/view/setting_screen.dart';
-import 'package:momochari/view/splash_screen.dart';
 import 'package:navigator_scope/navigator_scope.dart';
 
 void main() async {

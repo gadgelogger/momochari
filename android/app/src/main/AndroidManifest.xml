@@ -17,7 +17,7 @@
         </intent>
     </queries>
     <application
-        android:label="ももチャリ"
+        android:label="PeachPedal"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
